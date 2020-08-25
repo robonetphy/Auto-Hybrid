@@ -12,21 +12,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ReadXSL {
 
-	static Keywords keyword;
+     
 
-	public void runLeadTest() throws IOException, InterruptedException {
-		keyword = new Keywords();
-		FileInputStream file = new FileInputStream("/home/robro/Downloads/testing/LeadSuite.xlsx");
-		XSSFWorkbook workbook  = new XSSFWorkbook(file);
-		int NumberOfSheets=workbook.getNumberOfSheets();
-		System.out.println("Number Of Sheets:"+NumberOfSheets);
-		for(int i=0;i<NumberOfSheets;i++)
-		{
-			System.out.println("At index "+i+" Sheet Name : "+workbook.getSheetName(i));
-		}
-		for(int currentSheet=0;currentSheet<NumberOfSheets;currentSheet++) {
-		System.out.println("Pivoting Sheet with  Name : "+workbook.getSheetName(currentSheet));
-		XSSFSheet sheet = workbook.getSheet(workbook.getSheetName(currentSheet));
+	public void runLeadTest(XSSFSheet workSheetObject,Object[] testData) throws IOException, InterruptedException {
+		Keywords keyword = new Keywords();
+		XSSFSheet sheet = workSheetObject;
 		ArrayList data = new ArrayList();
 		Iterator row = sheet.iterator();
 		while (row.hasNext()) {
@@ -50,92 +40,184 @@ public class ReadXSL {
 				}
 			}	
 		}
-		System.out.println(data);
-		for (int i=3;i<data.size();i++){
-			
-			if (data.get(i).equals("openbrowser")) {
-				System.out.println(data.get(i));
-				System.out.println(data.get(i+1));
-				System.out.println(data.get(i+2));
-				String objectFilePath=(String) data.get(i+2);
-				keyword.openbrowser(objectFilePath);
-			}
-			if (data.get(i).equals("navigate")) {
-				String key = (String) data.get(i);
-				String testData = (String) data.get(i+1);
-				String objectName = (String) data.get(i+2);
-				keyword.navigate(testData);
-			}
-			if (data.get(i).equals("input")) {
-				String key = (String) data.get(i);
-				String testData = (String) data.get(i+1);
-				String objectName = (String) data.get(i+2);
-				System.out.println(key);
-				System.out.println(testData);
-				System.out.println(objectName);
-				keyword.input(testData,objectName);	
-			}
-			if (data.get(i).equals("click")){
-				String key = (String) data.get(i);
-				String testData = (String) data.get(i+1);
-				String objectName = (String) data.get(i+2);
-				System.out.println(key);
-				System.out.println(testData);
-				System.out.println(objectName);
-				keyword.click(objectName);	
-			}
-			
-			if (data.get(i).equals("selectlist")) {
-				String key = (String) data.get(i);
-				String testData = (String) data.get(i+1);
-				String objectName = (String) data.get(i+2);
-				System.out.println(key);
-				System.out.println(testData);
-				System.out.println(objectName);
-				keyword.selectlist(testData,objectName);
-				
-			}
-			if (data.get(i).equals("verifypagetext")) {
-				String key = (String) data.get(i);
-				String ExpectedTestData = (String) data.get(i+1);
-				String objectName = (String) data.get(i+2);
-				System.out.println(key);
-				System.out.println(ExpectedTestData);
-				System.out.println(objectName);
-				String actualValue = keyword.verifypagetext(ExpectedTestData,objectName);
-			
-			}
-			if (data.get(i).equals("verifyeditboxtext")) {
-				String key = (String) data.get(i);
-				String ExpectedTestData = (String) data.get(i+1);
-				String objectName = (String) data.get(i+2);
-				System.out.println(key);
-				System.out.println(ExpectedTestData);
-				System.out.println(objectName);
-				String actualValue = keyword.verifyeditboxtext(ExpectedTestData,objectName);
-				
-			}
-			if (data.get(i).equals("verifypagetitle")) {
-				String key = (String) data.get(i);
-				String ExpectedTestData = (String) data.get(i+1);
-				String objectName = (String) data.get(i+2);
-				String actualValue = keyword.verifypagetitle(ExpectedTestData);
-				
-			}
-			if (data.get(i).equals("screenshot")){
-				String key = (String) data.get(i);
-				String testData = (String) data.get(i+1);
-				String objectName = (String) data.get(i+2);
-				System.out.println(key);
-				System.out.println(testData);
-				System.out.println(objectName);
-				keyword.screenshot(testData);	
-			}
-						
-		}
-		
-		}
 
+		System.out.print("[INFO_MSG]");
+		System.out.println(data);
+		int indexForTestData=0;
+		try {
+			
+		for (int i=3;i<data.size();i++){
+				
+				if (data.get(i).equals("openbrowser")) {
+					System.out.print("[INFO_MSG]");
+					System.out.println(data.get(i));
+					System.out.print("[INFO_MSG]");
+					System.out.println(data.get(i+1));
+					System.out.print("[INFO_MSG]");
+					System.out.println(data.get(i+2));
+					String objectFilePath=(String) data.get(i+2);
+					if(objectFilePath == "data")
+						{
+						objectFilePath=(String)testData[indexForTestData++];
+						System.out.println("[INFO_MSG][TestDataCurrent] "+objectFilePath);
+						}
+					keyword.openbrowser(objectFilePath);
+				}
+				if (data.get(i).equals("navigate")) {
+					String key = (String) data.get(i);
+					String ExpectedTestData = (String) data.get(i+1);
+					String objectName = (String) data.get(i+2);
+					System.out.print("[INFO_MSG]");
+					System.out.println(key);
+					System.out.print("[INFO_MSG]");
+					System.out.println(ExpectedTestData);
+					if(ExpectedTestData.equals("data"))
+						{
+						ExpectedTestData=(String)testData[indexForTestData++];
+						System.out.println("[INFO_MSG][TestDataCurrent] "+ExpectedTestData);
+						}
+					System.out.print("[INFO_MSG]");
+					System.out.println(objectName);
+					keyword.navigate(ExpectedTestData);
+				}
+				if (data.get(i).equals("input")) {
+					String key = (String) data.get(i);
+					String ExpectedTestData = (String) data.get(i+1);
+					String objectName = (String) data.get(i+2);
+					System.out.print("[INFO_MSG]");
+					System.out.println(key);
+					System.out.print("[INFO_MSG]");
+					System.out.println(ExpectedTestData);
+					if(ExpectedTestData.equals("data"))
+						{
+						ExpectedTestData=(String)testData[indexForTestData++];
+						System.out.println("[INFO_MSG][TestDataCurrent] "+ExpectedTestData);
+						}
+					System.out.print("[INFO_MSG]");
+					System.out.println(objectName);
+					keyword.input(ExpectedTestData,objectName);	
+				}
+				if (data.get(i).equals("click")){
+					String key = (String) data.get(i);
+					String ExpectedTestData = (String) data.get(i+1);
+					String objectName = (String) data.get(i+2);
+					System.out.print("[INFO_MSG]");
+					System.out.println(key);
+					System.out.print("[INFO_MSG]");
+					System.out.println(ExpectedTestData);
+					if(ExpectedTestData.equals("data"))
+						{
+						ExpectedTestData=(String)testData[indexForTestData++];
+						System.out.println("[INFO_MSG][TestDataCurrent] "+ExpectedTestData);
+						}
+					System.out.print("[INFO_MSG]");
+					System.out.println(objectName);
+					keyword.click(objectName);	
+				}
+				
+				if (data.get(i).equals("selectlist")) {
+					String key = (String) data.get(i);
+					String ExpectedTestData = (String) data.get(i+1);
+					String objectName = (String) data.get(i+2);
+					System.out.print("[INFO_MSG]");
+					System.out.println(key);
+					System.out.print("[INFO_MSG]");
+					System.out.println(ExpectedTestData);
+					if(ExpectedTestData.equals("data"))
+							{
+							ExpectedTestData=(String)testData[indexForTestData++];
+							System.out.println("[INFO_MSG][TestDataCurrent] "+ExpectedTestData);
+							}
+	
+					System.out.print("[INFO_MSG]");
+					System.out.println(objectName);
+					keyword.selectlist(ExpectedTestData,objectName);
+					
+				}
+				if (data.get(i).equals("verifypagetext")) {
+					String key = (String) data.get(i);
+					String ExpectedTestData = (String) data.get(i+1);
+					String objectName = (String) data.get(i+2);
+					System.out.print("[INFO_MSG]");
+					System.out.println(key);
+					System.out.print("[INFO_MSG]");
+					System.out.println(ExpectedTestData);
+					if(ExpectedTestData.equals("data"))
+					{
+					ExpectedTestData=(String)testData[indexForTestData++];
+					System.out.println("[INFO_MSG][TestDataCurrent] "+ExpectedTestData);
+					}
+					System.out.print("[INFO_MSG]");
+					System.out.println(objectName);
+					String actualValue = keyword.verifypagetext(ExpectedTestData,objectName);
+				
+				}
+				if (data.get(i).equals("verifyeditboxtext")) {
+					String key = (String) data.get(i);
+					String ExpectedTestData = (String) data.get(i+1);
+					String objectName = (String) data.get(i+2);
+					System.out.print("[INFO_MSG]");
+					System.out.println(key);
+					System.out.print("[INFO_MSG]");
+					System.out.println(ExpectedTestData);
+					if(ExpectedTestData.equals("data"))
+					{
+					ExpectedTestData=(String)testData[indexForTestData++];
+					System.out.println("[INFO_MSG][TestDataCurrent] "+ExpectedTestData);
+					}
+					System.out.print("[INFO_MSG]");
+					System.out.println(objectName);
+					String actualValue = keyword.verifyeditboxtext(ExpectedTestData,objectName);
+					
+				}
+				if (data.get(i).equals("verifypagetitle")) {
+					String key = (String) data.get(i);
+					String ExpectedTestData = (String) data.get(i+1);
+					String objectName = (String) data.get(i+2);
+					String actualValue = keyword.verifypagetitle(ExpectedTestData);
+					
+				}
+				if (data.get(i).equals("screenshot")){
+					String key = (String) data.get(i);
+					String ExpectedTestData = (String) data.get(i+1);
+					String objectName = (String) data.get(i+2);
+					System.out.print("[INFO_MSG]");
+					System.out.println(key);
+					System.out.print("[INFO_MSG]");
+					System.out.println(ExpectedTestData);
+					if(ExpectedTestData.equals("data"))
+					{
+					ExpectedTestData=(String)testData[indexForTestData++];
+					System.out.println("[INFO_MSG][TestDataCurrent] "+ExpectedTestData);
+					}
+					System.out.print("[INFO_MSG]");
+					System.out.println(objectName);
+					keyword.screenshot(ExpectedTestData);	
+				}
+				if (data.get(i).equals("closebrowser")){
+					String key = (String) data.get(i);
+					String ExpectedTestData = (String) data.get(i+1);
+					String objectName = (String) data.get(i+2);
+					System.out.print("[INFO_MSG]");
+					System.out.println(key);
+					System.out.print("[INFO_MSG]");
+					System.out.println(ExpectedTestData);
+					if(ExpectedTestData.equals("data"))
+					{
+					ExpectedTestData=(String)testData[indexForTestData++];
+					System.out.println("[INFO_MSG][TestDataCurrent] "+ExpectedTestData);
+					}
+					System.out.print("[INFO_MSG]");
+					System.out.println(objectName);
+					keyword.closebrowser();;	
+				}
+							
+			}
+		}
+		catch(Exception e) {
+			System.out.println("[ERROR_MSG][TestDataCurrent] Due to number of Data in TestSteps not match with column in TestData ");
+		}
+	
 	}
 
 }

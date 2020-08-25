@@ -21,6 +21,9 @@ public class Keywords {
 	static FileInputStream input;
 	public void openbrowser(String objectFilePath) throws IOException  {
 		driver = new FirefoxDriver();
+		driver.manage().window().maximize();
+		driver.manage().deleteAllCookies();
+		driver.manage().timeouts().pageLoadTimeout(40, TimeUnit.SECONDS);
 		driver.manage().timeouts().implicitlyWait(30,TimeUnit.SECONDS);
 		prop = new Properties();
 		input =	new FileInputStream(objectFilePath);
@@ -63,5 +66,9 @@ public class Keywords {
 	public void screenshot(String objectName) throws IOException {
 		File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
 		FileHandler.copy(scrFile, new File(objectName));
+	}
+	public void closebrowser() {
+		driver.quit();
+		System.out.println("[INFO_MSG] System Closed");
 	}
 }
